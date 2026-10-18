@@ -1,0 +1,11 @@
+Zombie de prueba creado (padre PID 177010).
+2026-10-17 18:36:02 | CPU: 9% | RAM: 61% | Zombies: 1
+ALERTA en Servidor de Computacion Avanzada - 2026-10-17 18:36:02
+CPU utilizada: 9% (umbral: 0%, muestra de 1 segundo).
+RAM utilizada: 61% (umbral: 0%).
+Procesos zombie: 1.
+PID / PPID / ESTADO (primeros 10):
+ 177014  177010 Z
+
+Alerta enviada a Discord.
+Alerta enviada por Telegram.

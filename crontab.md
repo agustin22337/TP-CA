@@ -1,1 +1,1 @@
-*/30 * * * * /bin/bash /home/agustin-misael-ramirez/GitHub/TP-CA/monitor_servidor/monitor_servidor.sh >> /home/agustin-misael-ramirez/GitHub/TP-CA/monitor_servidor/monitor.log 2>&1
+* * * * * /bin/bash /home/agustin-misael-ramirez/GitHub/TP-CA/monitor_servidor/monitor_servidor.sh >> /home/agustin-misael-ramirez/GitHub/TP-CA/monitor_servidor/monitor.log 2>&1

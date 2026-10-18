@@ -194,44 +194,19 @@ sys.exit(0 if json.load(sys.stdin).get("ok") is True else 1)
 
 # 9. ENVÍO DE CORREO POR GMAIL
 enviar_correo() {
-    [[ -n "$GMAIL_USUARIO" &&
-       -n "$GMAIL_CLAVE_APP" &&
-       -n "$MAIL_DESTINO" ]] || return 1
+    [[ -n "$GMAIL_USUARIO" && -n "$MAIL_DESTINO" ]] || {
+        echo "Correo: faltan remitente o destinatario." >&2
+        return 1
+    }
 
-    # Pasar los datos a Python mediante variables de entorno.
-    GMAIL_USUARIO="$GMAIL_USUARIO" \
-    GMAIL_CLAVE_APP="$GMAIL_CLAVE_APP" \
-    MAIL_DESTINO="$MAIL_DESTINO" \
-    MENSAJE="$mensaje" python3 - <<'PY'
-import os
-import smtplib
-import ssl
-import sys
-from email.message import EmailMessage
-
-try:
-    correo = EmailMessage()
-    correo["From"] = os.environ["GMAIL_USUARIO"]
-    correo["To"] = os.environ["MAIL_DESTINO"]
-    correo["Subject"] = "Alerta del monitor del servidor"
-    correo.set_content(os.environ["MENSAJE"])
-
-    with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as smtp:
-        # Cifrar la conexión y verificar el certificado.
-        smtp.starttls(context=ssl.create_default_context())
-
-        # Autenticarse usando la contraseña de aplicación.
-        smtp.login(
-            os.environ["GMAIL_USUARIO"],
-            os.environ["GMAIL_CLAVE_APP"]
-        )
-
-        smtp.send_message(correo)
-
-except Exception as error:
-    print(f"Error SMTP: {error}", file=sys.stderr)
-    sys.exit(1)
-PY
+    {
+        printf 'From: %s\n' "$GMAIL_USUARIO"
+        printf 'To: %s\n' "$MAIL_DESTINO"
+        printf 'Subject: Alerta del monitor del servidor\n'
+        printf 'MIME-Version: 1.0\n'
+        printf 'Content-Type: text/plain; charset=UTF-8\n\n'
+        printf '%s\n' "$mensaje"
+    } | msmtp --account=gmail "$MAIL_DESTINO"
 }
 
 # 10. INTENTAR LOS TRES CANALES
